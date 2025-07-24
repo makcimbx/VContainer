@@ -27,10 +27,6 @@ namespace VContainer.Unity
         [Tooltip("Removes (Clone) postfix in IObjectResolver.Instantiate() and IContainerBuilder.RegisterComponentInNewPrefab().")]
         public bool RemoveClonePostfix;
 
-        [SerializeField]
-        [Tooltip("Enables optional dependency injection. If enabled, the container will not throw an error if a dependency is not found.")]
-        public bool OptionalDependencyInjection;
-
 #if UNITY_EDITOR
         [UnityEditor.MenuItem("Assets/Create/VContainer/VContainer Settings")]
         public static void CreateAsset()

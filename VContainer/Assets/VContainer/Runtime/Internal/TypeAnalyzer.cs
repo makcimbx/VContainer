@@ -48,12 +48,15 @@ namespace VContainer.Internal
         public readonly MethodInfo MethodInfo;
         public readonly ParameterInfo[] ParameterInfos;
         public readonly object[] ParameterKeys;
+        public readonly bool IsOptional;
 
         public InjectMethodInfo(MethodInfo methodInfo)
         {
             MethodInfo = methodInfo;
             ParameterInfos = methodInfo.GetParameters();
             ParameterKeys = ExtractParameterKeys(ParameterInfos);
+
+            IsOptional = methodInfo.GetCustomAttribute<OptionalAttribute>() != null;
         }
         
         private static object[] ExtractParameterKeys(ParameterInfo[] parameters)
@@ -75,6 +78,7 @@ namespace VContainer.Internal
     {
         public readonly FieldInfo FieldInfo;
         public readonly object Key;
+        public readonly bool IsOptional;
         
         public InjectFieldInfo(FieldInfo fieldInfo)
         {
@@ -84,6 +88,8 @@ namespace VContainer.Internal
             {
                 Key = attr.Key;
             }
+
+            IsOptional = fieldInfo.GetCustomAttribute<OptionalAttribute>() != null;
         }
         
         public Type FieldType => FieldInfo.FieldType;
@@ -96,6 +102,7 @@ namespace VContainer.Internal
     {
         public readonly PropertyInfo PropertyInfo;
         public readonly object Key;
+        public readonly bool IsOptional;
         
         public InjectPropertyInfo(PropertyInfo propertyInfo)
         {
@@ -105,6 +112,8 @@ namespace VContainer.Internal
             {
                 Key = attr.Key;
             }
+
+            IsOptional = propertyInfo.GetCustomAttribute<OptionalAttribute>() != null;
         }
         
         public Type PropertyType => PropertyInfo.PropertyType;

@@ -18,7 +18,7 @@ namespace VContainer
         /// <remarks>
         /// This version of resolve looks for all of scopes
         /// </remarks>
-        object Resolve(Type type, object key = null);
+        object Resolve(Type type, object key = null, bool optional = false);
 
         /// <summary>
         /// Try resolve from type with or without key
@@ -85,13 +85,13 @@ namespace VContainer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object Resolve(Type type, object key = null)
+        public object Resolve(Type type, object key = null, bool optional = false)
         {
             if (TryFindRegistration(type, key, out var registration))
             {
                 return Resolve(registration);
             }
-            if (VContainerSettings.Instance.OptionalDependencyInjection)
+            if (optional)
             {
                 if (type.IsValueType)
                 {
@@ -235,11 +235,19 @@ namespace VContainer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object Resolve(Type type, object key = null)
+        public object Resolve(Type type, object key = null, bool optional = false)
         {
             if (TryGetRegistration(type, out var registration, key))
             {
                 return Resolve(registration);
+            }
+            if (optional)
+            {
+                if (type.IsValueType)
+                {
+                    return Activator.CreateInstance(type);
+                }
+                return null;
             }
             throw new VContainerException(type, $"No such registration of type: {type} with Key: {key}");
         }

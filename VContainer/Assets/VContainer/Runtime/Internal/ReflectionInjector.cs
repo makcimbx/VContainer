@@ -68,7 +68,7 @@ namespace VContainer.Internal
 
             foreach (var x in injectTypeInfo.InjectFields)
             {
-                var fieldValue = resolver.ResolveOrParameter(x.FieldType, x.Name, parameters, x.Key);
+                var fieldValue = resolver.ResolveOrParameter(x.FieldType, x.Name, parameters, x.Key, x.IsOptional);
                 x.SetValue(obj, fieldValue);
             }
         }
@@ -80,7 +80,7 @@ namespace VContainer.Internal
 
             foreach (var x in injectTypeInfo.InjectProperties)
             {
-                var propValue = resolver.ResolveOrParameter(x.PropertyType, x.Name, parameters, x.Key);
+                var propValue = resolver.ResolveOrParameter(x.PropertyType, x.Name, parameters, x.Key, x.IsOptional);
                 x.SetValue(obj, propValue);
             }
         }
@@ -106,7 +106,8 @@ namespace VContainer.Internal
                             parameterInfo.ParameterType,
                             parameterInfo.Name,
                             parameters,
-                            key);
+                            key,
+                            method.IsOptional);
                     }
                     method.MethodInfo.Invoke(obj, parameterValues);
                 }

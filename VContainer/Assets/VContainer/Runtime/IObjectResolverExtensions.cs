@@ -7,7 +7,7 @@ namespace VContainer
     public static class IObjectResolverExtensions
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T Resolve<T>(this IObjectResolver resolver, object key = null) => (T)resolver.Resolve(typeof(T), key);
+        public static T Resolve<T>(this IObjectResolver resolver, object key = null, bool optional = false) => (T)resolver.Resolve(typeof(T), key, optional);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryResolve<T>(this IObjectResolver resolver, out T resolved, object key = null)
@@ -36,18 +36,19 @@ namespace VContainer
         // Using from CodeGen
         [Preserve]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static object ResolveNonGeneric(this IObjectResolver resolve, Type type, object key = null) => resolve.Resolve(type, key);
+        public static object ResolveNonGeneric(this IObjectResolver resolve, Type type, object key = null, bool optional = false) => resolve.Resolve(type, key, optional);
 
         public static object ResolveOrParameter(
             this IObjectResolver resolver,
             Type parameterType,
             string parameterName,
             IReadOnlyList<IInjectParameter> parameters,
-            object key = null)
+            object key = null,
+            bool optional = false)
         {
             if (parameters == null)
             {
-                return resolver.Resolve(parameterType, key);
+                return resolver.Resolve(parameterType, key, optional);
             }
             
             // ReSharper disable once ForCanBeConvertedToForeach
@@ -61,8 +62,8 @@ namespace VContainer
             }
 
             return key != null ?
-                resolver.Resolve(parameterType, key) :
-                resolver.Resolve(parameterType);
+                resolver.Resolve(parameterType, key, optional) :
+                resolver.Resolve(parameterType, optional);
         }
     }
 }
