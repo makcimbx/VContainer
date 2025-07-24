@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using VContainer.Diagnostics;
 using VContainer.Internal;
+using VContainer.Unity;
 
 namespace VContainer
 {
@@ -89,6 +90,14 @@ namespace VContainer
             if (TryFindRegistration(type, key, out var registration))
             {
                 return Resolve(registration);
+            }
+            if (VContainerSettings.Instance.OptionalDependencyInjection)
+            {
+                if (type.IsValueType)
+                {
+                    return Activator.CreateInstance(type);
+                }
+                return null;
             }
             throw new VContainerException(type, $"No such registration of type: {type} {(key == null ? string.Empty : $"with Key: {key}")}");
         }
